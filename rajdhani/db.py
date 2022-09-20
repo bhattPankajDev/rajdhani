@@ -22,6 +22,15 @@ s = station_table
 
 db_ops.ensure_db()
 
+#
+# Adding the global list for station_list auto_complete otherwise need to seacrh in whole DB
+#
+
+query = (
+    select(s.c).limit(10)
+)
+station_list = query.execute().all()
+
 
 def search_stations(q):
     """Returns the top ten stations matching the given query string.
@@ -35,11 +44,7 @@ def search_stations(q):
     # and replace the following dummy implementation
 
     # get all the stations list from table station
-    query = (
-        select(s.c.station_code, s.c.station_name)
-    )
-    station_list = query.execute().all()
-
+    print("--->", station_list)
     results = []
 
     for station_info in station_list:
