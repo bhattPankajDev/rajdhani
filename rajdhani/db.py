@@ -53,11 +53,12 @@ def search_trains(
     # and replace the following dummy implementation
 
     q = (
-        select(t.c).
-        where( t.c.from_station_code == from_station_code,
+        select(t.c.number, t.c.name, t.c.from_station_code, t.c.from_station_name, t.c.to_station_code, t.c.to_station_name, t.c.departure, t.c.arrival, t.c.duration_h, t.c.duration_m).
+        where(t.c.from_station_code == from_station_code,
               t.c.to_station_code == to_station_code)
     )
     print(q)
+
     results = q.execute().all()
     print(results)
     return results
