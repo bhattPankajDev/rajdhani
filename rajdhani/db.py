@@ -33,7 +33,23 @@ def search_stations(q):
     """
     # TODO: make a db query to get the matching stations
     # and replace the following dummy implementation
-    return placeholders.AUTOCOMPLETE_STATIONS
+
+    # get all the stations list from table station
+    query = (
+        select(s.c.station_code, s.c.station_name)
+    )
+    station_list = query.execute().all()
+
+    results = []
+
+    for station_info in station_list:
+        search_text = q.lower()
+        station_info_name = station_info.name.lower()
+        station_info_code = station_info.code.lower()
+        if search_text in station_info_name or search_text in station_info_code:
+            results.append(station_info)
+
+    return results
 
 # helper function for search_trains
 # # functionality is takes a time string converts it to int value for easier checkng of slot values / range
