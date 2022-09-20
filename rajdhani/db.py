@@ -5,6 +5,22 @@ Module to interact with the database.
 from . import placeholders
 from . import db_ops
 
+import sqlalchemy
+
+from sqlalchemy import create_engine, MetaData, Table, select, func
+
+engine = create_engine("sqlite:///trains.db")
+
+meta = MetaData(bind=engine)
+
+train_table = Table("train", meta, autoload=True)
+
+t = train_table
+
+station_table = Table("station", meta, autoload=True)
+
+s = station_table
+
 db_ops.ensure_db()
 
 
@@ -19,6 +35,7 @@ def search_stations(q):
     # TODO: make a db query to get the matching stations
     # and replace the following dummy implementation
     return placeholders.AUTOCOMPLETE_STATIONS
+
 
 def search_trains(
         from_station_code,
@@ -36,12 +53,21 @@ def search_trains(
     # TODO: make a db query to get the matching trains
     # and replace the following dummy implementation
 
-    return placeholders.SEARCH_TRAINS
+    q = (
+        select(t.c).
+        where(ticket_class != None, t.c.from_station_code ==
+              from_station_code, t.c.to_station_code == to_station_code)
+    )
+    results = q.execute().all()
+    return results
+    # return placeholders.SEARCH_TRAINS
+
 
 def get_schedule(train_number):
     """Returns the schedule of a train.
     """
     return placeholders.SCHEDULE
+
 
 def book_ticket(train_number, ticket_class, departure_date, passenger_name, passenger_email):
     """Book a ticket for passenger
@@ -50,6 +76,7 @@ def book_ticket(train_number, ticket_class, departure_date, passenger_name, pass
     # into the booking table
 
     return placeholders.TRIPS[0]
+
 
 def get_trips(email):
     """Returns the bookings made by the user
