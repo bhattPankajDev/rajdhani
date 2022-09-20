@@ -51,16 +51,38 @@ def search_trains(
     """
     # TODO: make a db query to get the matching trains
     # and replace the following dummy implementation
+    print('The searched ticket_class is :', ticket_class)
 
-    q = (
-        select(t.c.number, t.c.name, t.c.from_station_code, t.c.from_station_name, t.c.to_station_code, t.c.to_station_name, t.c.departure, t.c.arrival, t.c.duration_h, t.c.duration_m).
-        where(t.c.from_station_code == from_station_code,
-              t.c.to_station_code == to_station_code)
-    )
-    print(q)
+    dict_get_class = {
+        'SL': t.c.sleeper,
+        '3A': t.c.third_ac,
+        '2A': t.c.second_ac,
+        '1A': t.c.first_ac,
+        'FC': t.c.first_class,
+        'CC': t.c.chair_car
+    }
 
-    results = q.execute().all()
-    print(results)
+    query = ''
+
+    if ticket_class != None:
+        attr_name = dict_get_class[ticket_class]
+        query = (
+            select(t.c.number, t.c.name, t.c.from_station_code, t.c.from_station_name, t.c.to_station_code, t.c.to_station_name, t.c.departure, t.c.arrival, t.c.duration_h, t.c.duration_m).
+            where(t.c.from_station_code == from_station_code,
+                  t.c.to_station_code == to_station_code,
+                  attr_name > 0
+                  )
+        )
+
+    else:
+        query = (
+            select(t.c.number, t.c.name, t.c.from_station_code, t.c.from_station_name, t.c.to_station_code, t.c.to_station_name, t.c.departure, t.c.arrival, t.c.duration_h, t.c.duration_m).
+            where(t.c.from_station_code == from_station_code,
+                  t.c.to_station_code == to_station_code)
+        )
+
+    results = query.execute().all()
+    # print(results)
     return results
     # return placeholders.SEARCH_TRAINS
 
