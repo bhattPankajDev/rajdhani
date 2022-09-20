@@ -41,8 +41,9 @@ def search_stations(q):
 
 def helper_time(inp_time):
     inp_time_list = inp_time.split(':')[:2]
-    inp_time_str = ''.join(inp_time)
+    inp_time_str = ''.join(inp_time_list)
     inp_tme_int = int(inp_time_str)
+    return inp_tme_int
 
 
 def search_trains(
