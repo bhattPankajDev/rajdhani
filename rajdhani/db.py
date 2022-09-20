@@ -35,6 +35,15 @@ def search_stations(q):
     # and replace the following dummy implementation
     return placeholders.AUTOCOMPLETE_STATIONS
 
+# helper function for search_trains
+# # functionality is takes a time string converts it to int value for easier checkng of slot values / range
+
+
+def helper_time(inp_time):
+    inp_time_list = inp_time.split(':')[:2]
+    inp_time_str = ''.join(inp_time)
+    inp_tme_int = int(inp_time_str)
+
 
 def search_trains(
         from_station_code,
@@ -51,7 +60,10 @@ def search_trains(
     """
     # TODO: make a db query to get the matching trains
     # and replace the following dummy implementation
-    print('The searched ticket_class is :', ticket_class)
+    print(
+        f"The searched ticket_class {ticket_class} and the depart list is {departure_time} and the arrival list is {arrival_time}")
+
+    # This helps to map input ticket_class with class type inside DB
 
     dict_get_class = {
         'SL': t.c.sleeper,
@@ -60,6 +72,16 @@ def search_trains(
         '1A': t.c.first_ac,
         'FC': t.c.first_class,
         'CC': t.c.chair_car
+    }
+
+    # This helps to map input depart_list and arrival_list
+
+    dict_get_slot_range = {
+        'slot1': [0, 800],
+        'slot2': [801, 1200],
+        'slot3': [1201, 1600],
+        'slot4': [1601, 2000],
+        'slot5': [2001, 2359]
     }
 
     query = ''
@@ -74,7 +96,7 @@ def search_trains(
                   )
         )
 
-    else:
+    else:  # only gets triggered for task 2
         query = (
             select(t.c.number, t.c.name, t.c.from_station_code, t.c.from_station_name, t.c.to_station_code, t.c.to_station_name, t.c.departure, t.c.arrival, t.c.duration_h, t.c.duration_m).
             where(t.c.from_station_code == from_station_code,
@@ -82,9 +104,38 @@ def search_trains(
         )
 
     results = query.execute().all()
+
+    mod_results = []
+
+    if len(departure_time) > 0:
+
+        for dep_time in departure_time:
+
+            time_range = dict_get_slot_range[dep_time]
+
+            for res in results:
+
+                curr_dep_time = helper_time(res.departure)
+                if time_range[0] <= curr_dep_time and curr_dep_time <= time_range[1]:
+                    mod_results.append(res)
+
+    if len(arrival_time) > 0:
+
+        for arri_time in arrival_time:
+
+            time_range = dict_get_slot_range[arri_time]
+
+            for res in results:
+
+                curr_arri_time = helper_time(res.arrival)
+                if time_range[0] <= curr_arri_time and curr_arri_time <= time_range[1]:
+                    mod_results.append(res)
+
+    if len(mod_results) > 0:
+        results = mod_results
+
     # print(results)
     return results
-    # return placeholders.SEARCH_TRAINS
 
 
 def get_schedule(train_number):
