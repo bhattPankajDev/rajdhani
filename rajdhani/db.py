@@ -2,12 +2,11 @@
 Module to interact with the database.
 """
 
+from sqlalchemy import create_engine, MetaData, Table, select, func
+
 from . import placeholders
 from . import db_ops
 
-import sqlalchemy
-
-from sqlalchemy import create_engine, MetaData, Table, select, func
 
 engine = create_engine("sqlite:///trains.db")
 
@@ -58,7 +57,9 @@ def search_trains(
         where(t.c.from_station_code == from_station_code,
               t.c.to_station_code == to_station_code)
     )
+    print(q)
     results = q.execute().all()
+    print(results)
     return results
     # return placeholders.SEARCH_TRAINS
 
