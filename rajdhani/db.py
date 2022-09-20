@@ -55,7 +55,7 @@ def search_trains(
 
     q = (
         select(t.c).
-        where(ticket_class != None, t.c.from_station_code ==
+        where(t.c.from_station_code ==
               from_station_code, t.c.to_station_code == to_station_code)
     )
     results = q.execute().all()
