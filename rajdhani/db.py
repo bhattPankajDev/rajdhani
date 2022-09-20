@@ -4,6 +4,7 @@ Module to interact with the database.
 
 from sqlalchemy import create_engine, MetaData, Table, select, func
 
+
 from . import placeholders
 from . import db_ops
 
@@ -27,7 +28,7 @@ db_ops.ensure_db()
 #
 
 query = (
-    select(s.c).limit(10)
+    select(s.c.name, s.c.code)
 )
 station_list = query.execute().all()
 
@@ -44,7 +45,8 @@ def search_stations(q):
     # and replace the following dummy implementation
 
     # get all the stations list from table station
-    print("--->", station_list)
+
+    print('Input text is ', q.lower())
     results = []
 
     for station_info in station_list:
@@ -53,8 +55,12 @@ def search_stations(q):
         station_info_code = station_info.code.lower()
         if search_text in station_info_name or search_text in station_info_code:
             results.append(station_info)
+    results = results[:10]
+    print("The result ", results)
 
-    return results
+    station_res = [dict(res) for res in results]
+
+    return station_res
 
 # helper function for search_trains
 # # functionality is takes a time string converts it to int value for easier checkng of slot values / range

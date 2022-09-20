@@ -1,6 +1,7 @@
 import requests
 import sqlite3
 import sqlalchemy
+import json
 from pathlib import Path
 
 from .config import db_path, db_init_url
@@ -8,7 +9,6 @@ from .config import db_path, db_init_url
 
 def init_db():
     download_file(db_init_url, db_path)
-
 
 
 def reset_db():
