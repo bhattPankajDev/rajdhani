@@ -27,11 +27,6 @@ db_ops.ensure_db()
 # Adding the global list for station_list auto_complete otherwise need to seacrh in whole DB
 #
 
-query = (
-    select(s.c.name, s.c.code)
-)
-station_list = query.execute().all()
-
 
 def search_stations(q):
     """Returns the top ten stations matching the given query string.
@@ -47,13 +42,19 @@ def search_stations(q):
     # get all the stations list from table station
 
     print('Input text is ', q.lower())
+
+    query = (
+        select(s.c.name, s.c.code)
+    )
+    station_list = query.execute().all()
+
     results = []
 
     for station_info in station_list:
         search_text = q.lower()
         station_info_name = station_info.name.lower()
         station_info_code = station_info.code.lower()
-        if search_text in station_info_name or search_text in station_info_code:
+        if search_text in station_info_name or search_text == station_info_code:
             results.append(station_info)
     results = results[:10]
     print("The result ", results)
