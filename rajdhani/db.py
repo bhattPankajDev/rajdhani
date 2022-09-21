@@ -2,7 +2,7 @@
 Module to interact with the database.
 """
 
-from sqlalchemy import create_engine, MetaData, Table, select, func
+from sqlalchemy import create_engine, MetaData, Table, select, func, insert
 
 
 from . import placeholders
@@ -24,6 +24,10 @@ s = station_table
 schedule_table = Table("schedule", meta, autoload=True)
 
 sch = schedule_table
+
+booking_table = Table('booking', meta, autoload=True)
+
+b = booking_table
 
 db_ops.ensure_db()
 
@@ -195,7 +199,22 @@ def book_ticket(train_number, ticket_class, departure_date, passenger_name, pass
     # TODO: make a db query and insert a new booking
     # into the booking table
 
-    return placeholders.TRIPS[0]
+    # id integer primary key,
+    # train_number text references train(number),
+    # from_station_code text,
+    # to_station_code text,
+    # passenger_name text,
+    # passenger_email text,
+    # ticket_class text,
+    # date text
+    print('Booking funct started')
+    smt = insert(
+        (b).values(train_number=train_number, date=departure_date,
+                   passenger_name=passenger_name, passenger_email=passenger_email, ticket_class=ticket_class)
+    )
+    result = smt.execute().commit()
+    print('Booking query : ', result)
+    return dict(result)
 
 
 def get_trips(email):
