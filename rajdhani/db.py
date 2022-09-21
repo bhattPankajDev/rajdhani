@@ -208,11 +208,10 @@ def book_ticket(train_number, ticket_class, departure_date, passenger_name, pass
     # ticket_class text,
     # date text
     print('Booking funct started')
-    smt = insert(
-        (b).values(train_number=train_number, date=departure_date,
-                   passenger_name=passenger_name, passenger_email=passenger_email, ticket_class=ticket_class)
-    )
-    result = smt.execute().commit()
+    smt = insert(b).values(train_number=train_number, date=departure_date,
+                           passenger_name=passenger_name, passenger_email=passenger_email, ticket_class=ticket_class)
+
+    result = smt.execute()
     print('Booking query : ', result)
     return dict(result)
 

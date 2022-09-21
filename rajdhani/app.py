@@ -145,7 +145,7 @@ def book_ticket_page():
     if request.method == "POST":
         booking = db.book_ticket(train_number=request.form.get("train"),
                                  ticket_class=request.form.get("class"),
-                                 date=request.form.get("date"),
+                                 departure_date=request.form.get("date"),
                                  passenger_name=request.form.get(
                                      "passenger_name"),
                                  passenger_email=request.form.get("passenger_email"))
