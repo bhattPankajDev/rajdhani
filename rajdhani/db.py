@@ -178,8 +178,8 @@ def get_schedule(train_number):
     train_number = int(train_number)
 
     query = (
-        select(sch.c.station_name, sch.c.station_code, sch.c.day, sch.c.arrival).
-        where(sch.c.number == train_number)
+        select(sch.c.station_name, sch.c.station_code, sch.c.day, sch.c.arrival, sch.c.departure).
+        where(sch.c.train_number == train_number)
     )
 
     result = query.execute().all()
