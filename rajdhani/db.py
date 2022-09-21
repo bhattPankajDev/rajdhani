@@ -21,6 +21,10 @@ station_table = Table("station", meta, autoload=True)
 
 s = station_table
 
+schedule_table = Table("schedule", meta, autoload=True)
+
+sch = schedule_table
+
 db_ops.ensure_db()
 
 #
@@ -170,7 +174,19 @@ def search_trains(
 def get_schedule(train_number):
     """Returns the schedule of a train.
     """
-    return placeholders.SCHEDULE
+    # {"station_code": "BCT", "station_name": "Mumbai Central", "day": "1.0", "arrival": "None", "departure": "23:25:00"},
+    train_number = int(train_number)
+
+    query = (
+        select(sch.c.station_name, sch.c.station_code, sch.c.day, sch.c.arrival).
+        where(sch.c.number == train_number)
+    )
+
+    result = query.execute().all()
+
+    print('schdule for train no is ', result)
+
+    return result
 
 
 def book_ticket(train_number, ticket_class, departure_date, passenger_name, passenger_email):
